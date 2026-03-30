@@ -120,7 +120,7 @@
     }
     .hero::before {
       content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-      width: 800px; height: 800px; border-radius: 50%;
+      width: min(800px, 100vw); height: min(800px, 100vw); border-radius: 50%;
       background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
       pointer-events: none;
     }
@@ -310,12 +310,89 @@
     }
     .cta-banner p { color: var(--text-muted); margin-bottom: 2rem; font-size: 1.05rem; }
 
+    /* ─── HAMBURGER MENU ─── */
+    .hamburger {
+      display: none; flex-direction: column; justify-content: center; gap: 5px;
+      width: 44px; height: 44px; cursor: pointer; padding: 8px;
+      background: none; border: none; z-index: 200;
+    }
+    .hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: var(--text); border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(10, 10, 15, 0.97); z-index: 150;
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 2rem; padding: 2rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-size: 1.5rem; font-weight: 600; color: var(--text);
+      transition: color 0.2s; text-align: center;
+    }
+    .mobile-menu a:hover { color: var(--accent-light); }
+    .mobile-menu .btn { font-size: 1rem; padding: 0.9rem 2rem; min-height: 52px; }
+
     /* ─── RESPONSIVE ─── */
     @media (max-width: 768px) {
-      .nav-links a:not(.btn) { display: none; }
-      .about-grid, .contact-wrapper { grid-template-columns: 1fr; gap: 2.5rem; }
+      /* Nav */
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      /* Layout */
+      .about-grid, .contact-wrapper { grid-template-columns: 1fr; gap: 2rem; }
       .about-stats { grid-template-columns: 1fr 1fr; }
       section { padding: 4rem 1.25rem; }
+
+      /* Hero */
+      .hero { padding: 7rem 1.25rem 3rem; }
+      .hero p { font-size: 1.05rem; }
+      .hero-buttons { flex-direction: column; align-items: stretch; }
+      .hero-buttons .btn { width: 100%; justify-content: center; min-height: 52px; font-size: 1rem; }
+
+      /* Buttons — 44px minimum touch target */
+      .btn { min-height: 44px; padding: 0.75rem 1.4rem; }
+
+      /* Grids — force single column on narrow phones */
+      .services-grid { grid-template-columns: 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+
+      /* Pricing cards */
+      .pricing-card { padding: 2rem 1.5rem; }
+      .pricing-badge { white-space: nowrap; }
+
+      /* Form */
+      .form { padding: 1.75rem 1.25rem; }
+      .form-group input,
+      .form-group textarea,
+      .form-group select { font-size: 16px; }  /* prevent iOS zoom */
+
+      /* CTA banner */
+      .cta-banner { padding: 3.5rem 1.25rem; }
+      .cta-banner .btn { width: 100%; justify-content: center; min-height: 52px; }
+
+      /* Reduce continuous animations for performance */
+      .grid-bg::after { animation: none; opacity: 0.5; }
+      .grid-glow { animation: none; }
+    }
+
+    @media (max-width: 480px) {
+      nav { padding: 1rem 1.25rem; }
+      .logo { font-size: 1.25rem; }
+      .hero { padding: 6rem 1rem 2.5rem; }
+      section { padding: 3rem 1rem; }
+      .service-card { padding: 1.5rem; }
+      .about-stats { gap: 1rem; }
+      .stat { padding: 1rem; }
+      .stat-number { font-size: 1.6rem; }
+      .contact-info h2 { font-size: 1.6rem; }
     }
   </style>
 </head>
@@ -335,7 +412,19 @@
       <a href="#contact">Contact</a>
       <a href="#contact" class="btn btn-primary">Book a Consultation</a>
     </div>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation">
+    <a href="#services" class="mobile-nav-link">Services</a>
+    <a href="#about" class="mobile-nav-link">About</a>
+    <a href="#pricing" class="mobile-nav-link">Pricing</a>
+    <a href="#contact" class="mobile-nav-link">Contact</a>
+    <a href="#contact" class="btn btn-primary mobile-nav-link">Book a Consultation</a>
+  </div>
 
   <!-- HERO -->
   <section class="hero">
@@ -593,6 +682,32 @@
       btn.style.background = '#27ae60';
       btn.disabled = true;
     }
+
+    // Hamburger menu
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    function toggleMenu(open) {
+      hamburger.classList.toggle('open', open);
+      mobileMenu.classList.toggle('open', open);
+      hamburger.setAttribute('aria-expanded', String(open));
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+
+    hamburger.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.contains('open');
+      toggleMenu(!isOpen);
+    });
+
+    // Close menu when a nav link is clicked
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', () => toggleMenu(false));
+    });
+
+    // Close on ESC
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') toggleMenu(false);
+    });
   </script>
 </body>
 </html>
