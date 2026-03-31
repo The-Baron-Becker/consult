@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Healthcare &amp; Life Sciences AI Enablement — Consult</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0a0f; --bg-card: #12121a; --bg-card-hover: #1a1a26; --border: #1e1e2e;
+      --text: #e4e4ed; --text-muted: #8888a4; --accent: #6c5ce7; --accent-light: #a29bfe;
+      --accent-glow: rgba(108, 92, 231, 0.25);
+      --gradient-1: linear-gradient(135deg, #6c5ce7, #a29bfe);
+      --gradient-2: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+    .grid-bg {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+      background-image: linear-gradient(rgba(108,92,231,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(108,92,231,0.07) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 20%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 20%, transparent 75%);
+    }
+    .grid-bg::after {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background-image: linear-gradient(rgba(162,155,254,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(162,155,254,0.04) 1px, transparent 1px);
+      background-size: 60px 60px; background-position: 30px 30px;
+      animation: gridPulse 8s ease-in-out infinite alternate;
+    }
+    @keyframes gridPulse { 0% { opacity: 0.3; } 50% { opacity: 0.8; } 100% { opacity: 0.3; } }
+    .grid-glow {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+      background: radial-gradient(circle 400px at 30% 20%, rgba(108,92,231,0.06), transparent), radial-gradient(circle 300px at 70% 60%, rgba(162,155,254,0.04), transparent);
+      animation: glowDrift 12s ease-in-out infinite alternate;
+    }
+    @keyframes glowDrift { 0% { transform: translate(0,0); } 100% { transform: translate(20px,-15px); } }
+    a { color: inherit; text-decoration: none; }
+    nav, section, footer, .cta-banner { position: relative; z-index: 1; }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.25rem 2rem; backdrop-filter: blur(20px); background: rgba(10,10,15,0.8); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links > a { font-size: 0.9rem; font-weight: 500; color: var(--text-muted); transition: color 0.2s; }
+    .nav-links > a:hover { color: var(--text); }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.6rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; transition: all 0.25s; }
+    .btn-primary { background: var(--gradient-1); color: #fff; -webkit-text-fill-color: #fff; box-shadow: 0 4px 20px var(--accent-glow); text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 30px var(--accent-glow); }
+    .btn-outline { background: transparent; color: var(--accent-light); border: 1px solid var(--accent); }
+    .btn-outline:hover { background: var(--accent); color: #fff; -webkit-text-fill-color: #fff; }
+    .nav-dropdown { position: relative; display: flex; align-items: center; }
+    .nav-dropdown-trigger { background: none; border: none; font-family: inherit; font-size: 0.9rem; font-weight: 500; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 0.25rem; padding: 0; transition: color 0.2s; }
+    .nav-dropdown-trigger:hover { color: var(--text); }
+    .nav-dropdown-arrow { font-size: 0.65rem; transition: transform 0.2s; display: inline-block; }
+    .nav-dropdown.active .nav-dropdown-arrow { transform: rotate(180deg); }
+    .nav-dropdown-menu { position: absolute; top: calc(100% + 0.75rem); left: 50%; transform: translateX(-50%) translateY(-6px); background: var(--bg-card); border: 1px solid rgba(108,92,231,0.25); border-radius: 12px; padding: 0.5rem; min-width: 220px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+    .nav-dropdown:hover .nav-dropdown-menu, .nav-dropdown.active .nav-dropdown-menu { opacity: 1; pointer-events: all; transform: translateX(-50%) translateY(0); }
+    .nav-dropdown-menu a { display: block; padding: 0.55rem 1rem; border-radius: 8px; color: var(--text-muted); font-size: 0.875rem; font-weight: 500; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+    .nav-dropdown-menu a:hover { background: rgba(108,92,231,0.12); color: var(--accent-light); }
+    .nav-dropdown-menu a.current { color: var(--accent-light); font-weight: 600; }
+    .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8rem 2rem 4rem; position: relative; }
+    .hero::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: min(800px,100vw); height: min(800px,100vw); border-radius: 50%; background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%); pointer-events: none; }
+    .hero-content { max-width: 820px; position: relative; z-index: 1; }
+    .hero-badge { display: inline-block; padding: 0.4rem 1rem; border-radius: 100px; background: rgba(108,92,231,0.12); border: 1px solid rgba(108,92,231,0.3); font-size: 0.8rem; font-weight: 600; color: var(--accent-light); margin-bottom: 2rem; letter-spacing: 0.05em; text-transform: uppercase; }
+    .hero h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1.5rem; }
+    .hero h1 span { background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 2.5rem; line-height: 1.7; }
+    .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    section { padding: 6rem 2rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-light); margin-bottom: 0.75rem; }
+    .section-title { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1rem; line-height: 1.15; }
+    .section-sub { font-size: 1.05rem; color: var(--text-muted); max-width: 600px; line-height: 1.7; margin-bottom: 3.5rem; }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .service-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; transition: all 0.3s; }
+    .service-card:hover { background: var(--bg-card-hover); border-color: rgba(108,92,231,0.3); transform: translateY(-4px); box-shadow: 0 8px 32px rgba(108,92,231,0.1); }
+    .service-icon { width: 48px; height: 48px; border-radius: 12px; background: rgba(108,92,231,0.12); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; font-size: 1.4rem; }
+    .service-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.6rem; }
+    .service-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.65; }
+    .cta-banner { text-align: center; padding: 5rem 2rem; background: linear-gradient(135deg, rgba(108,92,231,0.08), rgba(162,155,254,0.08)); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .cta-banner h2 { font-size: clamp(1.6rem, 3.5vw, 2.5rem); font-weight: 800; margin-bottom: 1rem; letter-spacing: -0.02em; }
+    .cta-banner p { color: var(--text-muted); margin-bottom: 2rem; font-size: 1.05rem; }
+    footer { padding: 3rem 2rem; border-top: 1px solid var(--border); text-align: center; }
+    footer p { color: var(--text-muted); font-size: 0.85rem; }
+    .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 44px; height: 44px; cursor: pointer; padding: 8px; background: none; border: none; z-index: 200; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: all 0.3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .mobile-menu { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10,10,15,0.97); z-index: 150; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 2rem; overflow-y: auto; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu > a { font-size: 1.5rem; font-weight: 600; color: var(--text); transition: color 0.2s; text-align: center; }
+    .mobile-menu > a:hover { color: var(--accent-light); }
+    .mobile-menu .btn { font-size: 1rem; padding: 0.9rem 2rem; min-height: 52px; }
+    .nav-close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #fff; font-size: 28px; cursor: pointer; min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; opacity: 0.8; transition: opacity 0.2s; }
+    .nav-close-btn:hover { opacity: 1; }
+    .mobile-industries { text-align: center; border-top: 1px solid var(--border); padding-top: 1.25rem; width: 100%; }
+    .mobile-industries-label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-light); margin-bottom: 0.75rem; }
+    .mobile-industries-links { display: flex; flex-direction: column; gap: 0.5rem; }
+    .mobile-industries-links a { font-size: 1.1rem; font-weight: 500; color: var(--text-muted); transition: color 0.2s; }
+    .mobile-industries-links a:hover { color: var(--text); }
+    @media (max-width: 768px) {
+      .nav-links { display: none; } .hamburger { display: flex; }
+      section { padding: 4rem 1.25rem; } .hero { padding: 7rem 1.25rem 3rem; }
+      .hero p { font-size: 1.05rem; } .hero-buttons { flex-direction: column; align-items: stretch; }
+      .hero-buttons .btn { width: 100%; justify-content: center; min-height: 52px; font-size: 1rem; }
+      .btn { min-height: 44px; padding: 0.75rem 1.4rem; } .services-grid { grid-template-columns: 1fr; }
+      .cta-banner { padding: 3.5rem 1.25rem; } .cta-banner .btn { width: 100%; justify-content: center; min-height: 52px; }
+      .grid-bg::after { animation: none; opacity: 0.5; } .grid-glow { animation: none; }
+    }
+    @media (max-width: 480px) { nav { padding: 1rem 1.25rem; } .logo { font-size: 1.25rem; } .hero { padding: 6rem 1rem 2.5rem; } section { padding: 3rem 1rem; } .service-card { padding: 1.5rem; } }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div class="grid-glow"></div>
+  <nav>
+    <a href="/" class="logo">consult</a>
+    <div class="nav-links">
+      <a href="/#services">Services</a>
+      <a href="/#agents">Agents</a>
+      <a href="/#about">About</a>
+      <a href="/#pricing">Pricing</a>
+      <div class="nav-dropdown" id="navDropdown">
+        <button class="nav-dropdown-trigger" id="dropdownTrigger" aria-haspopup="true" aria-expanded="false">Industries <span class="nav-dropdown-arrow">▾</span></button>
+        <div class="nav-dropdown-menu" role="menu">
+          <a href="/tech/" role="menuitem">Technology &amp; SaaS</a>
+          <a href="/healthcare/" class="current" role="menuitem">Healthcare &amp; Life Sciences</a>
+          <a href="/finance/" role="menuitem">Financial Services</a>
+          <a href="/real-estate/" role="menuitem">Real Estate &amp; PropTech</a>
+          <a href="/government/" role="menuitem">Government &amp; Defense</a>
+        </div>
+      </div>
+      <a href="/#contact">Contact</a>
+      <a href="/#contact" class="btn btn-primary">Book a Consultation</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation">
+    <button class="nav-close-btn" onclick="toggleMenu(false)" aria-label="Close menu">&#x2715;</button>
+    <a href="/#services" class="mobile-nav-link">Services</a>
+    <a href="/#agents" class="mobile-nav-link">Agents</a>
+    <a href="/#about" class="mobile-nav-link">About</a>
+    <a href="/#pricing" class="mobile-nav-link">Pricing</a>
+    <a href="/#contact" class="mobile-nav-link">Contact</a>
+    <div class="mobile-industries">
+      <span class="mobile-industries-label">Industries</span>
+      <div class="mobile-industries-links">
+        <a href="/tech/" class="mobile-nav-link">Technology &amp; SaaS</a>
+        <a href="/healthcare/" class="mobile-nav-link">Healthcare &amp; Life Sciences</a>
+        <a href="/finance/" class="mobile-nav-link">Financial Services</a>
+        <a href="/real-estate/" class="mobile-nav-link">Real Estate &amp; PropTech</a>
+        <a href="/government/" class="mobile-nav-link">Government &amp; Defense</a>
+      </div>
+    </div>
+    <a href="/#contact" class="btn btn-primary mobile-nav-link">Book a Consultation</a>
+  </div>
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">Healthcare &amp; Life Sciences AI Enablement</div>
+      <h1>Deliver better care with <span>AI at your side</span></h1>
+      <p>We help healthcare organizations and life sciences companies deploy AI that reduces administrative burden, improves clinical workflows, and gets the right information to the right person — without compromising compliance or security.</p>
+      <div class="hero-buttons">
+        <a href="/#contact" class="btn btn-primary">Book a Consultation →</a>
+        <a href="/#services" class="btn btn-outline">Our Services</a>
+      </div>
+    </div>
+  </section>
+  <section id="use-cases">
+    <div class="container">
+      <div class="section-label">Use Cases</div>
+      <h2 class="section-title">AI built for Healthcare &amp; Life Sciences</h2>
+      <p class="section-sub">From clinical documentation to revenue cycle — concrete AI deployments that reduce burden, improve outcomes, and keep compliance intact.</p>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">📝</div>
+          <h3>Clinical Documentation Assistant</h3>
+          <p>We build a documentation assistant that listens to physician-patient conversations and drafts structured SOAP notes automatically. Physicians spend 60% less time on documentation, reducing burnout and reclaiming patient-facing hours every single day.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">⚡</div>
+          <h3>Prior Authorization Automation</h3>
+          <p>We automate the prior authorization workflow with an agent that extracts relevant clinical data from patient records, maps it to payer criteria, and submits pre-filled authorization requests. Approval turnaround drops from days to hours — without adding staff.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🏥</div>
+          <h3>Patient Triage Agent</h3>
+          <p>We deploy an AI triage agent for patient intake — via web, SMS, or phone — that collects symptoms, checks history, and routes patients to the appropriate care pathway: urgent care, scheduling, telehealth, or emergency. Proper routing from day one reduces unnecessary ER visits and improves patient satisfaction.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">💊</div>
+          <h3>Drug Interaction Screening Agent</h3>
+          <p>We build an agent for clinical pharmacists that cross-references new prescriptions against a patient's full medication list and flags potentially harmful interactions. The agent integrates with your EHR and surfaces alerts before the prescription is confirmed — a critical safety layer at scale.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">💰</div>
+          <h3>Revenue Cycle Coding AI</h3>
+          <p>We deploy an AI agent that reviews medical coding before claims submission, flagging undercodes, overcodes, and common denial triggers based on your payer mix. Most clients see a 15–25% reduction in claim denials within the first quarter of deployment.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🔬</div>
+          <h3>Research Summarization Agent</h3>
+          <p>We build a retrieval-augmented research agent that indexes clinical trial databases, PubMed, and internal research notes. Physicians and researchers get concise, cited summaries of the latest evidence — reducing literature review time from hours to minutes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="cta-banner">
+    <div class="container">
+      <h2>Ready to deploy AI in Healthcare?</h2>
+      <p>Let's identify the highest-impact clinical and operational AI opportunities specific to your organization.</p>
+      <a href="/#contact" class="btn btn-primary">Book a Free Consultation →</a>
+    </div>
+  </section>
+  <footer><div class="container"><p>&copy; 2026 Consult. All rights reserved.</p></div></footer>
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    function toggleMenu(open) { hamburger.classList.toggle('open', open); mobileMenu.classList.toggle('open', open); hamburger.setAttribute('aria-expanded', String(open)); document.body.style.overflow = open ? 'hidden' : ''; }
+    hamburger.addEventListener('click', () => toggleMenu(!mobileMenu.classList.contains('open')));
+    document.querySelectorAll('.mobile-nav-link').forEach(l => l.addEventListener('click', () => toggleMenu(false)));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') toggleMenu(false); });
+    const navDropdown = document.getElementById('navDropdown');
+    const dropdownTrigger = document.getElementById('dropdownTrigger');
+    if (navDropdown && dropdownTrigger) {
+      dropdownTrigger.addEventListener('click', e => { e.stopPropagation(); const a = navDropdown.classList.toggle('active'); dropdownTrigger.setAttribute('aria-expanded', String(a)); });
+      document.addEventListener('click', () => { navDropdown.classList.remove('active'); dropdownTrigger.setAttribute('aria-expanded', 'false'); });
+      navDropdown.addEventListener('click', e => e.stopPropagation());
+    }
+  </script>
+</body>
+</html>

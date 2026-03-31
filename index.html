@@ -432,6 +432,23 @@
     }
     .nav-close-btn:hover { opacity: 1; }
 
+    /* ─── DROPDOWN ─── */
+    .nav-dropdown { position: relative; display: flex; align-items: center; }
+    .nav-dropdown-trigger { background: none; border: none; font-family: inherit; font-size: 0.9rem; font-weight: 500; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 0.25rem; padding: 0; transition: color 0.2s; }
+    .nav-dropdown-trigger:hover { color: var(--text); }
+    .nav-dropdown-arrow { font-size: 0.65rem; transition: transform 0.2s; display: inline-block; }
+    .nav-dropdown.active .nav-dropdown-arrow { transform: rotate(180deg); }
+    .nav-dropdown-menu { position: absolute; top: calc(100% + 0.75rem); left: 50%; transform: translateX(-50%) translateY(-6px); background: var(--bg-card); border: 1px solid rgba(108,92,231,0.25); border-radius: 12px; padding: 0.5rem; min-width: 220px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+    .nav-dropdown:hover .nav-dropdown-menu, .nav-dropdown.active .nav-dropdown-menu { opacity: 1; pointer-events: all; transform: translateX(-50%) translateY(0); }
+    .nav-dropdown-menu a { display: block; padding: 0.55rem 1rem; border-radius: 8px; color: var(--text-muted); font-size: 0.875rem; font-weight: 500; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+    .nav-dropdown-menu a:hover { background: rgba(108,92,231,0.12); color: var(--accent-light); }
+    /* Mobile Industries */
+    .mobile-industries { text-align: center; border-top: 1px solid var(--border); padding-top: 1.25rem; width: 100%; }
+    .mobile-industries-label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-light); margin-bottom: 0.75rem; }
+    .mobile-industries-links { display: flex; flex-direction: column; gap: 0.5rem; }
+    .mobile-industries-links a { font-size: 1.1rem; font-weight: 500; color: var(--text-muted); transition: color 0.2s; }
+    .mobile-industries-links a:hover { color: var(--text); }
+
     /* ─── RESPONSIVE ─── */
     @media (max-width: 768px) {
       /* Nav */
@@ -509,6 +526,18 @@
       <a href="#agents">Agents</a>
       <a href="#about">About</a>
       <a href="#pricing">Pricing</a>
+      <div class="nav-dropdown" id="navDropdown">
+        <button class="nav-dropdown-trigger" id="dropdownTrigger" aria-haspopup="true" aria-expanded="false">
+          Industries <span class="nav-dropdown-arrow">▾</span>
+        </button>
+        <div class="nav-dropdown-menu" role="menu">
+          <a href="/tech/" role="menuitem">Technology &amp; SaaS</a>
+          <a href="/healthcare/" role="menuitem">Healthcare &amp; Life Sciences</a>
+          <a href="/finance/" role="menuitem">Financial Services</a>
+          <a href="/real-estate/" role="menuitem">Real Estate &amp; PropTech</a>
+          <a href="/government/" role="menuitem">Government &amp; Defense</a>
+        </div>
+      </div>
       <a href="#contact">Contact</a>
       <a href="#contact" class="btn btn-primary">Book a Consultation</a>
     </div>
@@ -525,6 +554,16 @@
     <a href="#about" class="mobile-nav-link">About</a>
     <a href="#pricing" class="mobile-nav-link">Pricing</a>
     <a href="#contact" class="mobile-nav-link">Contact</a>
+    <div class="mobile-industries">
+      <span class="mobile-industries-label">Industries</span>
+      <div class="mobile-industries-links">
+        <a href="/tech/" class="mobile-nav-link">Technology &amp; SaaS</a>
+        <a href="/healthcare/" class="mobile-nav-link">Healthcare &amp; Life Sciences</a>
+        <a href="/finance/" class="mobile-nav-link">Financial Services</a>
+        <a href="/real-estate/" class="mobile-nav-link">Real Estate &amp; PropTech</a>
+        <a href="/government/" class="mobile-nav-link">Government &amp; Defense</a>
+      </div>
+    </div>
     <a href="#contact" class="btn btn-primary mobile-nav-link">Book a Consultation</a>
   </div>
 
@@ -876,6 +915,22 @@
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') toggleMenu(false);
     });
+
+    // Industries dropdown
+    const navDropdown = document.getElementById('navDropdown');
+    const dropdownTrigger = document.getElementById('dropdownTrigger');
+    if (navDropdown && dropdownTrigger) {
+      dropdownTrigger.addEventListener('click', e => {
+        e.stopPropagation();
+        const active = navDropdown.classList.toggle('active');
+        dropdownTrigger.setAttribute('aria-expanded', String(active));
+      });
+      document.addEventListener('click', () => {
+        navDropdown.classList.remove('active');
+        dropdownTrigger.setAttribute('aria-expanded', 'false');
+      });
+      navDropdown.addEventListener('click', e => e.stopPropagation());
+    }
 
     // ─── VALUE OVER TIME CHART ───
     (function() {
