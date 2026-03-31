@@ -1156,5 +1156,73 @@
       });
     })();
   </script>
+
+  <!-- Hero heading typewriter effect -->
+  <script>
+    (function () {
+      var h1 = document.querySelector('.hero h1');
+      if (!h1) return;
+
+      // Segments: plain text then gradient span text
+      var segments = [
+        { text: 'Empower your team to ', span: false },
+        { text: 'scale with AI', span: true }
+      ];
+      var fullText = segments.map(function (s) { return s.text; }).join('');
+      h1.setAttribute('aria-label', fullText);
+
+      // Inject cursor styles (override .hero h1 span gradient for cursor)
+      var style = document.createElement('style');
+      style.textContent =
+        '@keyframes heroCursorBlink{0%,100%{opacity:1}50%{opacity:0}}' +
+        '@keyframes heroCursorFade{to{opacity:0}}' +
+        '.hero-cursor{' +
+          'display:inline-block;margin-left:1px;' +
+          'background:none!important;' +
+          '-webkit-background-clip:initial!important;' +
+          '-webkit-text-fill-color:var(--accent-light)!important;' +
+          'color:var(--accent-light);' +
+          'animation:heroCursorBlink 0.65s step-end infinite;' +
+        '}';
+      document.head.appendChild(style);
+
+      // Build flat char array with span flag
+      var chars = [];
+      segments.forEach(function (seg) {
+        seg.text.split('').forEach(function (ch) {
+          chars.push({ ch: ch, span: seg.span });
+        });
+      });
+
+      // Clear h1, set up text nodes and cursor
+      h1.innerHTML = '';
+      var plainNode = document.createTextNode('');
+      var spanEl = document.createElement('span');
+      var spanNode = document.createTextNode('');
+      spanEl.appendChild(spanNode);
+      var cursor = document.createElement('span');
+      cursor.className = 'hero-cursor';
+      cursor.textContent = '|';
+      h1.appendChild(plainNode);
+      h1.appendChild(spanEl);
+      h1.appendChild(cursor);
+
+      var i = 0;
+      function typeNext() {
+        if (i >= chars.length) {
+          // Done — fade cursor out
+          cursor.style.animation = 'heroCursorFade 0.4s ease 0.7s forwards';
+          setTimeout(function () { cursor.remove(); }, 1200);
+          return;
+        }
+        var item = chars[i++];
+        if (item.span) spanNode.textContent += item.ch;
+        else plainNode.textContent += item.ch;
+        setTimeout(typeNext, 48);
+      }
+
+      typeNext();
+    })();
+  </script>
 </body>
 </html>
